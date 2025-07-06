@@ -1,28 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Record {
   id: string;
   userId: string;
   title: string;
   audioUrl?: string;
+  decodedText?: string;
 }
 
 interface RecordDetailProps {
   record: Record | null;
+  onUpdateRecord: (record: Record) => void;
 }
 
-const RecordDetail: React.FC<RecordDetailProps> = ({ record }) => {
-  const [decodedText, setDecodedText] = useState<string | null>(null);
+const RecordDetail: React.FC<RecordDetailProps> = ({ record, onUpdateRecord }) => {
+  const [localDecodedText, setLocalDecodedText] = useState<string | null>(record?.decodedText || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalDecodedText(record?.decodedText || null);
+  }, [record]);
 
   const handleDecode = async () => {
     if (!record?.audioUrl) return;
     setLoading(true);
     setError(null);
-    setDecodedText(null);
+    setLocalDecodedText(null);
     try {
       const res = await fetch('/api/audio/decode', {
         method: 'POST',
@@ -31,7 +37,17 @@ const RecordDetail: React.FC<RecordDetailProps> = ({ record }) => {
       });
       if (!res.ok) throw new Error('Failed to decode');
       const data = await res.json();
-      setDecodedText(data.text || '');
+      setLocalDecodedText(data.text || '');
+      if (record) {
+        const updateRes = await fetch('/api/records', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: record.id, decodedText: data.text }),
+        });
+        if (!updateRes.ok) throw new Error('Failed to update record with decoded text');
+        const updatedRecord = await updateRes.json();
+        onUpdateRecord(updatedRecord);
+      }
     } catch (e: any) {
       setError(e.message || 'Unknown error');
     } finally {
@@ -60,15 +76,15 @@ const RecordDetail: React.FC<RecordDetailProps> = ({ record }) => {
           <button
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
             onClick={handleDecode}
-            disabled={loading}
+            disabled={loading || !!record.decodedText}
           >
-            {loading ? 'Decoding...' : 'Decode'}
+            {loading ? 'Decoding...' : (record.decodedText ? 'Decoded' : 'Decode')}
           </button>
           {error && <p className="text-red-500 mt-2">{error}</p>}
-          {decodedText && (
+          {(localDecodedText || record.decodedText) && (
             <div className="mt-4 p-2 border rounded">
               <h4 className="font-semibold mb-2">Decoded Text:</h4>
-              <pre className="whitespace-pre-wrap">{decodedText}</pre>
+              <pre className="whitespace-pre-wrap">{localDecodedText || record.decodedText}</pre>
             </div>
           )}
         </div>

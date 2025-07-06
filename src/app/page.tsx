@@ -76,14 +76,46 @@ export default function Home() {
     }
   };
 
+  const handleDeleteRecord = async (id: string) => {
+    try {
+      const res = await fetch('/api/records', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) {
+        setRecords((prev) => prev.filter((r) => r.id !== id));
+        if (selectedRecord && selectedRecord.id === id) {
+          setSelectedRecord(null);
+        }
+      } else {
+        console.error('Failed to delete record');
+      }
+    } catch (error) {
+      console.error('Failed to delete record:', error);
+    }
+  };
+
+  const handleUpdateRecord = (updatedRecord: Record) => {
+    setRecords((prevRecords) =>
+      prevRecords.map((record) => (record.id === updatedRecord.id ? updatedRecord : record))
+    );
+    if (selectedRecord && selectedRecord.id === updatedRecord.id) {
+      setSelectedRecord(updatedRecord);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-row items-start p-4">
       <RecordList 
         records={records} 
         onSelectRecord={handleSelectRecord} 
         onAddRecord={handleAddRecord}
+        onDeleteRecord={handleDeleteRecord}
       />
-      <RecordDetail record={selectedRecord} />
+      <RecordDetail record={selectedRecord}
+        onUpdateRecord={handleUpdateRecord}
+      />
       
       {isAddingNewRecord && (
         <div className="w-2/3 p-4 border-l">

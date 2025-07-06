@@ -20,4 +20,5 @@ model Record {
   userId    String
   title     String
   audioUrl  String?
+  decodedText String?
 }

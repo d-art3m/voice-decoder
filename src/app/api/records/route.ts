@@ -35,6 +35,15 @@ export async function POST(req: Request) {
       return new NextResponse("Title is required", { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+    const recordCount = await prisma.record.count({ where: { userId } });
+    if (recordCount >= 2 && !user.isPaid) {
+      return new NextResponse("Payment required", { status: 402 });
+    }
+
     const record = await prisma.record.create({
       data: {
         userId,

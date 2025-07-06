@@ -63,6 +63,22 @@ export default function Home() {
         },
         body: JSON.stringify({ title: newRecordTitle, audioUrl }),
       });
+
+      if (res.status === 402) {
+        const checkoutRes = await fetch('/api/records/checkout', {
+          method: 'POST',
+        });
+        const checkoutData = await checkoutRes.json();
+        if (checkoutData.url) {
+          window.location.href = checkoutData.url;
+        }
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error('Failed to create record');
+      }
+
       const newRecord = await res.json();
       setRecords((prevRecords) => [...prevRecords, newRecord]);
       setNewRecordTitle('');

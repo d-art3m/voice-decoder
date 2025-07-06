@@ -14,3 +14,10 @@ model User {
   email String @unique
   name  String
 }
+
+model Record {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  audioUrl  String?
+}

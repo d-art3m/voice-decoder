@@ -20,5 +20,22 @@ export async function POST(req: Request) {
     }
   }
 
+  if (event.type === 'user.deleted') {
+    const user = event.data;
+    try {
+      const dbUser = await prisma.user.findUnique({ where: { clerkUserId: user.id } });
+      if (dbUser) {
+        await prisma.record.deleteMany({ where: { userId: dbUser.id } });
+        await prisma.user.delete({ where: { id: dbUser.id } });
+        return NextResponse.json({ status: 'user deleted' });
+      } else {
+        return NextResponse.json({ status: 'user not found' });
+      }
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      return NextResponse.json({ status: 'error', error: errorMessage });
+    }
+  }
+
   return NextResponse.json({ status: 'ignored' });
 } 

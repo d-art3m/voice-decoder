@@ -44,8 +44,7 @@ export async function POST(req: Request) {
     if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }
-    const recordCount = await prisma.record.count({ where: { userId: user.id } });
-    if (recordCount >= 2 && !user.isPaid) {
+    if (user.recordCount >= 2 && !user.isPaid) {
       return new NextResponse("Payment required", { status: 402 });
     }
 
@@ -56,6 +55,11 @@ export async function POST(req: Request) {
         audioUrl,
         decodedText,
       },
+    });
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { recordCount: { increment: 1 } },
     });
 
     return NextResponse.json(record);

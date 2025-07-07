@@ -10,12 +10,12 @@ interface Record {
   decodedText?: string;
 }
 
-interface RecordDetailProps {
+interface RecordItemProps {
   record: Record | null;
   onUpdateRecord: (record: Record) => void;
 }
 
-const RecordDetail: React.FC<RecordDetailProps> = ({ record, onUpdateRecord }) => {
+const RecordItem: React.FC<RecordItemProps> = ({ record, onUpdateRecord }) => {
   const [localDecodedText, setLocalDecodedText] = useState<string | null>(record?.decodedText || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,15 +58,15 @@ const RecordDetail: React.FC<RecordDetailProps> = ({ record, onUpdateRecord }) =
   if (!record) {
     return (
       <div className="w-2/3 p-4 flex items-center justify-center">
-        <p className="text-gray-500">Select a record to view its details or add a new record.</p>
+        <p className="text-gray-500">Select a record to view its details or add a new record</p>
       </div>
     );
   }
 
   return (
-    <div className="w-2/3 p-4">
+    <div className="w-2/3 p-4 h-full overflow-y-auto min-h-0">
       <h2 className="text-xl font-bold mb-4">Record Details</h2>
-      <p>Title: {record.title}</p>
+      <p className="break-words whitespace-normal">Title: {record.title}</p>
       <p>ID: {record.id}</p>
       <p>User ID: {record.userId}</p>
       {record.audioUrl && (
@@ -93,4 +93,4 @@ const RecordDetail: React.FC<RecordDetailProps> = ({ record, onUpdateRecord }) =
   );
 };
 
-export default RecordDetail; 
+export default RecordItem; 

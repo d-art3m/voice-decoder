@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import RecordList from './components/RecordList';
-import RecordDetail from './components/RecordDetail';
+
+import AddRecord from './components/AddRecord';
+import RecordItem from './components/RecordItem';
 
 interface Record {
   id: string;
@@ -122,42 +124,25 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-row items-start p-4">
+    <main className="flex flex-1 flex-row min-h-0">
       <RecordList 
         records={records} 
         onSelectRecord={handleSelectRecord} 
         onAddRecord={handleAddRecord}
         onDeleteRecord={handleDeleteRecord}
       />
-      <RecordDetail record={selectedRecord}
-        onUpdateRecord={handleUpdateRecord}
-      />
-      
-      {isAddingNewRecord && (
-        <div className="w-2/3 p-4 border-l">
-          <h2 className="text-xl font-bold mb-4">Add New Record</h2>
-          <form onSubmit={handleSubmitNewRecord} className="flex flex-col gap-4">
-            <input
-              type="text"
-              placeholder="Record Title"
-              value={newRecordTitle}
-              onChange={(e) => setNewRecordTitle(e.target.value)}
-              className="p-2 border rounded-md"
-            />
-            <input
-              type="file"
-              accept="audio/*"
-              ref={audioFileRef}
-              className="p-2 border rounded-md"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Create Record
-            </button>
-          </form>
-        </div>
+      {isAddingNewRecord ? (
+        <AddRecord
+          newRecordTitle={newRecordTitle}
+          setNewRecordTitle={setNewRecordTitle}
+          audioFileRef={audioFileRef}
+          onSubmit={handleSubmitNewRecord}
+        />
+      ) : (
+        <RecordItem
+          record={selectedRecord}
+          onUpdateRecord={handleUpdateRecord}
+        />
       )}
     </main>
   );

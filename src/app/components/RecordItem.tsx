@@ -64,17 +64,14 @@ const RecordItem: React.FC<RecordItemProps> = ({ record, onUpdateRecord }) => {
   }
 
   return (
-    <div className="w-2/3 p-4 h-full overflow-y-auto min-h-0">
-      <h2 className="text-xl font-bold mb-4">Record Details</h2>
-      <p className="break-words whitespace-normal">Title: {record.title}</p>
-      <p>ID: {record.id}</p>
-      <p>User ID: {record.userId}</p>
+    <div className="w-full sm:w-2/3 p-4 h-auto sm:h-full overflow-y-auto min-h-0">
+      <h2 className="text-xl font-bold mb-4 break-words whitespace-normal">{record.title}</h2>
       {record.audioUrl && (
         <div>
-          <h3 className="text-lg font-semibold mt-4">Audio Playback</h3>
-          <audio controls src={record.audioUrl} className="w-full"></audio>
+          <h3 className="text-lg font-semibold my-4">Audio Playback</h3>
+          <audio controls src={record.audioUrl} className="w-full mb-4"></audio>
           <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+            className="w-full mt-0 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
             onClick={handleDecode}
             disabled={loading || !!record.decodedText}
           >

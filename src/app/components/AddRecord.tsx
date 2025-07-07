@@ -7,7 +7,7 @@ interface AddRecordProps {
 
 export default function AddRecord({ newRecordTitle, setNewRecordTitle, audioFileRef, onSubmit }: AddRecordProps) {
   return (
-    <div className="w-2/3 p-4 border-l h-full overflow-y-auto min-h-0">
+    <div className="w-full sm:w-2/3 p-4 sm:border-l h-auto sm:h-full overflow-y-auto min-h-0">
       <h2 className="text-xl font-bold mb-4">Add New Record</h2>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
@@ -17,12 +17,14 @@ export default function AddRecord({ newRecordTitle, setNewRecordTitle, audioFile
           onChange={(e) => setNewRecordTitle(e.target.value)}
           className="p-2 border rounded-md"
           maxLength={30}
+          required
         />
         <input
           type="file"
           accept="audio/*"
           ref={audioFileRef}
           className="p-2 border rounded-md"
+          required
         />
         <button
           type="submit"

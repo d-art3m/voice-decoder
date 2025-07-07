@@ -11,8 +11,13 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
     const records = await prisma.record.findMany({
-      where: { userId },
+      where: { userId: user.id },
     });
 
     return NextResponse.json(records);
@@ -36,14 +41,17 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
-    const recordCount = await prisma.record.count({ where: { userId } });
-    if (recordCount >= 2 && !user?.isPaid) {
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+    const recordCount = await prisma.record.count({ where: { userId: user.id } });
+    if (recordCount >= 2 && !user.isPaid) {
       return new NextResponse("Payment required", { status: 402 });
     }
 
     const record = await prisma.record.create({
       data: {
-        userId,
+        userId: user.id,
         title,
         audioUrl,
         decodedText,
@@ -69,8 +77,13 @@ export async function DELETE(req: Request) {
       return new NextResponse("Record id is required", { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
     await prisma.record.delete({
-      where: { id, userId },
+      where: { id, userId: user.id },
     });
     return new NextResponse(null, { status: 204 });
   } catch (error) {
@@ -96,8 +109,13 @@ export async function PATCH(req: Request) {
       return new NextResponse("Decoded text is required", { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
     const updatedRecord = await prisma.record.update({
-      where: { id, userId },
+      where: { id, userId: user.id },
       data: { decodedText },
     });
 

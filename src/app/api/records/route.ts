@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 
 export async function GET() {
   try {
@@ -36,11 +36,8 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({ where: { clerkUserId: userId } });
-    if (!user) {
-      return new NextResponse("User not found", { status: 404 });
-    }
     const recordCount = await prisma.record.count({ where: { userId } });
-    if (recordCount >= 2 && !user.isPaid) {
+    if (recordCount >= 2 && !user?.isPaid) {
       return new NextResponse("Payment required", { status: 402 });
     }
 

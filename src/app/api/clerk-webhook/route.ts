@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 
 const EVENT_USER_CREATED = 'user.created';
 const EVENT_USER_DELETED = 'user.deleted';

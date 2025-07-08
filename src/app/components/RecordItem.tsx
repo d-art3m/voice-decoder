@@ -1,7 +1,6 @@
 'use client';
 
 import { useRecordStore } from '../../store/recordStore';
-import { useState, useEffect } from 'react';
 
 const RecordItem: React.FC = () => {
   const { 
@@ -12,18 +11,11 @@ const RecordItem: React.FC = () => {
     setLoading,
     setError
   } = useRecordStore();
-  const [localDecodedText, setLocalDecodedText] = useState<string | null>(record?.decodedText || null);
-
-  useEffect(() => {
-    setLocalDecodedText(record?.decodedText || null);
-  }, [record]);
 
   const handleDecode = async () => {
     if (!record?.audioUrl) return;
     setLoading(true);
     setError(null);
-    setLocalDecodedText(null);
-
     try {
       const res = await fetch('/api/audio/decode', {
         method: 'POST',
@@ -32,7 +24,6 @@ const RecordItem: React.FC = () => {
       });
       if (!res.ok) throw new Error('Failed to decode');
       const data = await res.json();
-      setLocalDecodedText(data.text || '');
       if (record) {
         const updateRes = await fetch('/api/records', {
           method: 'PATCH',
@@ -73,10 +64,10 @@ const RecordItem: React.FC = () => {
             {loading ? 'Decoding...' : (record.decodedText ? 'Decoded' : 'Decode')}
           </button>
           {error && <p className="text-red-500 mt-2">{error}</p>}
-          {(localDecodedText || record.decodedText) && (
+          {record.decodedText && (
             <div className="mt-4 p-2 border rounded">
               <h4 className="font-semibold mb-2">Decoded Text:</h4>
-              <pre className="whitespace-pre-wrap">{localDecodedText || record.decodedText}</pre>
+              <pre className="whitespace-pre-wrap">{record.decodedText}</pre>
             </div>
           )}
         </div>

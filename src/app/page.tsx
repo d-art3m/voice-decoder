@@ -9,7 +9,7 @@ export default function Home() {
   const { isAddingNewRecord } = useRecordStore();
 
   return (
-    <main className="flex flex-1 flex-col sm:flex-row min-h-0">
+    <main className="flex flex-1 flex-col sm:flex-row min-h-0 h-full">
       <RecordList />
       {isAddingNewRecord ? <AddRecord /> : <RecordItem />}
     </main>

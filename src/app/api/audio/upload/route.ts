@@ -20,7 +20,6 @@ export async function POST(request: Request): Promise<NextResponse> {
     });
     return NextResponse.json(blob);
   } catch (error) {
-    console.error("[AUDIO_UPLOAD_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 } 

@@ -4,6 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+const PRODUCT_NAME = "Voice Decoder Unlimited";
+const PRODUCT_UNIT_AMOUNT = 500;
+const PRODUCT_CURRENCY = "usd";
+const PRODUCT_QUANTITY = 1;
+
 export async function POST() {
   try {
     const { userId } = await auth();
@@ -18,13 +23,13 @@ export async function POST() {
       line_items: [
         {
           price_data: {
-            currency: "usd",
+            currency: PRODUCT_CURRENCY,
             product_data: {
-              name: "Voice Decoder Unlimited",
+              name: PRODUCT_NAME,
             },
-            unit_amount: 500,
+            unit_amount: PRODUCT_UNIT_AMOUNT,
           },
-          quantity: 1,
+          quantity: PRODUCT_QUANTITY,
         },
       ],
       metadata: {
@@ -36,7 +41,6 @@ export async function POST() {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.log("[STRIPE_CHECKOUT_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 } 

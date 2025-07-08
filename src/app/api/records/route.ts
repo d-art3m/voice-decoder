@@ -1,7 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import { prisma } from "../../../lib/prisma";
+import { prisma } from '@lib/prisma';
+
+const FREE_RECORD_LIMIT = 2;
 
 export async function GET() {
   try {
@@ -22,7 +24,6 @@ export async function GET() {
 
     return NextResponse.json(records);
   } catch (error) {
-    console.log("[RECORDS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
     if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }
-    if (user.recordCount >= 2 && !user.isPaid) {
+    if (user.recordCount >= FREE_RECORD_LIMIT && !user.isPaid) {
       return new NextResponse("Payment required", { status: 402 });
     }
 
@@ -64,7 +65,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(record);
   } catch (error) {
-    console.log("[RECORDS_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -91,7 +91,6 @@ export async function DELETE(req: Request) {
     });
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.log("[RECORDS_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -125,7 +124,6 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(updatedRecord);
   } catch (error) {
-    console.log("[RECORDS_PATCH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 } 

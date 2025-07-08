@@ -3,6 +3,9 @@ import { NextResponse } from 'next/server';
 const ASSEMBLY_AI_TOKEN = process.env.ASSEMBLY_AI_TOKEN;
 const ASSEMBLY_API_URL = 'https://api.assemblyai.com/v2';
 
+const STATUS_COMPLETED = 'completed';
+const STATUS_FAILED = 'failed';
+
 async function startTranscription(audioUrl: string) {
   const res = await fetch(`${ASSEMBLY_API_URL}/transcript`, {
     method: 'POST',
@@ -24,8 +27,8 @@ async function pollTranscription(id: string, timeout = 60000, interval = 3000) {
     });
     if (!res.ok) throw new Error('Failed to poll transcription');
     const data = await res.json();
-    if (data.status === 'completed') return data;
-    if (data.status === 'failed') throw new Error('Transcription failed');
+    if (data.status === STATUS_COMPLETED) return data;
+    if (data.status === STATUS_FAILED) throw new Error('Transcription failed');
     await new Promise(r => setTimeout(r, interval));
   }
   throw new Error('Transcription timed out');

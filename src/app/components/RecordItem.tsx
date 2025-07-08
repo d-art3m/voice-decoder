@@ -1,24 +1,18 @@
 'use client';
 
+import { useRecordStore } from '../../store/recordStore';
 import { useState, useEffect } from 'react';
 
-interface Record {
-  id: string;
-  userId: string;
-  title: string;
-  audioUrl?: string;
-  decodedText?: string;
-}
-
-interface RecordItemProps {
-  record: Record | null;
-  onUpdateRecord: (record: Record) => void;
-}
-
-const RecordItem: React.FC<RecordItemProps> = ({ record, onUpdateRecord }) => {
+const RecordItem: React.FC = () => {
+  const { 
+    selectedRecord: record, 
+    updateRecord, 
+    loading,
+    error, 
+    setLoading,
+    setError
+  } = useRecordStore();
   const [localDecodedText, setLocalDecodedText] = useState<string | null>(record?.decodedText || null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalDecodedText(record?.decodedText || null);
@@ -29,6 +23,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ record, onUpdateRecord }) => {
     setLoading(true);
     setError(null);
     setLocalDecodedText(null);
+
     try {
       const res = await fetch('/api/audio/decode', {
         method: 'POST',
@@ -46,7 +41,7 @@ const RecordItem: React.FC<RecordItemProps> = ({ record, onUpdateRecord }) => {
         });
         if (!updateRes.ok) throw new Error('Failed to update record with decoded text');
         const updatedRecord = await updateRes.json();
-        onUpdateRecord(updatedRecord);
+        updateRecord(updatedRecord);
       }
     } catch (e: any) {
       setError(e.message || 'Unknown error');

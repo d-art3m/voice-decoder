@@ -15,7 +15,7 @@ export default function PaymentCancel() {
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Cancelled</h2>
         <p className="text-gray-600 mb-6">
-          Your payment was cancelled. You can still create up to 2 records for free.
+          Your payment was cancelled
         </p>
         <Link 
           href="/"

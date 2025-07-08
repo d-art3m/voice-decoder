@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Voice Decoder App
 
-## Getting Started
+### Live Demo: https://voice-decoder.vercel.app
 
-First, run the development server:
+Voice Decoder is a web application that allows users to upload audio files, decode their content into text, and manage their audio records. The app features user authentication, a simple dashboard for viewing and managing uploads, and supports payment for advanced features.
 
+## Tech Stack
+
+- Frontend: Next.js, TypeScript, TailwindCSS, Zustand
+- Backend: Next.js API Routes
+- Database: PostgreSQL
+- ORM: Prisma
+- File Storage: Vercel Blob
+- Authentication: Clerk
+- Speech-to-Text API: AssemblyAI
+- Payments: Stripe
+
+## Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/d-art3m/voice-decoder
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create your `.env` file
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open the `.env` file and configure the following environment variables:
+```bash
+NODE_ENV=
+NEXT_PUBLIC_BASE_URL=
 
-## Learn More
+DATABASE_URL=
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+BLOB_READ_WRITE_TOKEN=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ASSEMBLY_AI_TOKEN=
 
-## Deploy on Vercel
+STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Run the development server:
+```bash
+npm run dev
+```
